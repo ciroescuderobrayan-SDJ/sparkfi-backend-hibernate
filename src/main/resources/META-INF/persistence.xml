@@ -10,7 +10,11 @@
         <class>org.sparkfi.model.User</class>
         <class>org.sparkfi.model.Course</class>
         <class>org.sparkfi.model.UserProgress</class>
-
+        <class>org.sparkfi.model.LoginSession</class>
+        <class>org.sparkfi.model.Challenge</class>
+        <class>org.sparkfi.model.CommunityPost</class>
+        <class>org.sparkfi.model.Achievement</class>
+        <class>org.sparkfi.model.UserSettings</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver" />
