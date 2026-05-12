@@ -9,6 +9,7 @@
 
         <class>org.sparkfi.model.User</class>
         <class>org.sparkfi.model.Course</class>
+        <class>org.sparkfi.model.UserProgress</class>
 
 
         <properties>
