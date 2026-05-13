@@ -11,8 +11,8 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "achievements")
-public class Achievement {
+@Table(name = "user_achievements")
+public class UserAchievement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,10 +26,10 @@ public class Achievement {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Achievement() {
+    public UserAchievement() {
     }
 
-    public Achievement(User user, String title, String description, LocalDateTime earnedAt) {
+    public UserAchievement(User user, String title, String description, LocalDateTime earnedAt) {
         this.user = user;
         this.title = title;
         this.description = description;

@@ -13,13 +13,13 @@
         <class>org.sparkfi.model.LoginSession</class>
         <class>org.sparkfi.model.Challenge</class>
         <class>org.sparkfi.model.CommunityPost</class>
-        <class>org.sparkfi.model.Achievement</class>
+        <class>org.sparkfi.model.UserAchievement</class>
         <class>org.sparkfi.model.UserSettings</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver" />
 
-            <!-- Las credenciales reales se cargarán desde variables de entorno en JpaUtil -->
+            <!-- Las credenciales reales se cargan desde variables de entorno en JpaUtil -->
             <!-- Ejemplo de URL JDBC: jdbc:postgresql://HOST:5432/DATABASE?sslmode=require -->
 
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />

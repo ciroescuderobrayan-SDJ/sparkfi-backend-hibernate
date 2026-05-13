@@ -18,14 +18,16 @@ La idea de este proyecto es ir construyendo la capa de persistencia de una app e
 src/main/java/org/sparkfi
 +-- Main.java
 +-- model
-|   +-- Achievement.java
 |   +-- Challenge.java
 |   +-- CommunityPost.java
 |   +-- Course.java
 |   +-- LoginSession.java
 |   +-- User.java
+|   +-- UserAchievement.java
 |   +-- UserProgress.java
 |   +-- UserSettings.java
++-- repository
+|   +-- Repository.java
 +-- util
     +-- JpaUtil.java
 ```
@@ -42,7 +44,7 @@ El proyecto actualmente tiene estas entidades:
 - `LoginSession`: sesiones de inicio de sesion.
 - `Challenge`: retos financieros.
 - `CommunityPost`: publicaciones de comunidad.
-- `Achievement`: logros obtenidos por los usuarios.
+- `UserAchievement`: logros obtenidos por los usuarios al avanzar en cursos o retos.
 - `UserSettings`: preferencias de configuracion del usuario.
 
 ## Configuracion de base de datos
@@ -91,4 +93,4 @@ Si todo esta bien configurado, Maven deberia descargar las dependencias y compil
 
 ## Estado actual
 
-Este proyecto todavia esta en desarrollo. La base ya tiene las entidades principales y la conexion preparada para PostgreSQL. Los siguientes pasos naturales serian agregar repositorios o DAOs, servicios, pruebas y una forma mas completa de ejecutar la aplicacion.
+Este proyecto todavia esta en desarrollo. La base ya tiene las entidades principales, la conexion preparada para PostgreSQL y el primer contrato del patron Repository. Los siguientes pasos naturales serian agregar la implementacion generica del repositorio, repositorios especificos, pruebas y una forma mas completa de ejecutar la aplicacion.
