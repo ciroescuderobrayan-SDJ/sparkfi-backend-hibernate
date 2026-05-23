@@ -27,7 +27,17 @@ src/main/java/org/sparkfi
 |   +-- UserProgress.java
 |   +-- UserSettings.java
 +-- repository
+|   +-- ChallengeRepository.java
+|   +-- CommunityPostRepository.java
+|   +-- CourseRepository.java
+|   +-- LoginSessionRepository.java
 |   +-- Repository.java
+|   +-- UserAchievementRepository.java
+|   +-- UserProgressRepository.java
+|   +-- UserRepository.java
+|   +-- UserSettingsRepository.java
+|   +-- impl
+|       +-- GenericRepositoryImpl.java
 +-- util
     +-- JpaUtil.java
 ```
@@ -93,4 +103,4 @@ Si todo esta bien configurado, Maven deberia descargar las dependencias y compil
 
 ## Estado actual
 
-Este proyecto todavia esta en desarrollo. La base ya tiene las entidades principales, la conexion preparada para PostgreSQL y el primer contrato del patron Repository. Los siguientes pasos naturales serian agregar la implementacion generica del repositorio, repositorios especificos, pruebas y una forma mas completa de ejecutar la aplicacion.
+Este proyecto todavia esta en desarrollo. La base ya tiene las entidades principales, la conexion preparada para PostgreSQL, repositorios especificos para cada entidad y un `Main.java` que inserta datos de ejemplo usando el patron Repository.
