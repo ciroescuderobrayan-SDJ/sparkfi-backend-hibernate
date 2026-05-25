@@ -24,6 +24,7 @@ import org.sparkfi.repository.UserRepository;
 import org.sparkfi.repository.UserSettingsRepository;
 import org.sparkfi.util.JpaUtil;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Path;
@@ -42,6 +43,13 @@ public class Main {
     private static UserAchievementRepository userAchievementRepository;
     private static UserProgressRepository userProgressRepository;
     private static UserSettingsRepository userSettingsRepository;
+
+    private static final Color SPARKFI_GREEN = new Color(18, 132, 102);
+    private static final Color SPARKFI_LIGHT_GREEN = new Color(229, 247, 241);
+    private static final Color SPARKFI_DARK = new Color(31, 41, 55);
+    private static final Color SPARKFI_GRAY = new Color(75, 85, 99);
+    private static final Color SPARKFI_ORANGE = new Color(217, 119, 6);
+    private static final Color WHITE = Color.WHITE;
 
     public static void main(String[] args) {
         EntityManager entityManager = JpaUtil.getEntityManager();
@@ -293,16 +301,24 @@ public class Main {
             document.addPage(page);
 
             try (PDPageContentStream content = new PDPageContentStream(document, page)) {
-                float y = 740;
-                y = writeTitle(content, "Reporte SparkFi", y);
-                y = writeLine(content, "Usuarios registrados: " + userRepository.findAll().size(), y);
-                y = writeLine(content, "Cursos registrados: " + courseRepository.findAll().size(), y);
-                y = writeLine(content, "Retos registrados: " + challengeRepository.findAll().size(), y);
-                y = writeLine(content, "Publicaciones registradas: " + communityPostRepository.findAll().size(), y);
-                y = writeLine(content, "Logros registrados: " + userAchievementRepository.findAll().size(), y);
-                y = writeLine(content, "Progresos registrados: " + userProgressRepository.findAll().size(), y);
-                y = writeLine(content, "Configuraciones registradas: " + userSettingsRepository.findAll().size(), y);
-                y = writeLine(content, "Sesiones registradas: " + loginSessionRepository.findAll().size(), y);
+                drawHeader(content);
+
+                float y = 675;
+                y = writeSubtitle(content, "Resumen general", y);
+                y = writeSummaryRow(
+                        content,
+                        "Usuarios", userRepository.findAll().size(),
+                        "Cursos", courseRepository.findAll().size(),
+                        "Retos", challengeRepository.findAll().size(),
+                        y
+                );
+                y = writeSummaryRow(
+                        content,
+                        "Progresos", userProgressRepository.findAll().size(),
+                        "Logros", userAchievementRepository.findAll().size(),
+                        "Sesiones", loginSessionRepository.findAll().size(),
+                        y
+                );
 
                 y -= 15;
                 y = writeSubtitle(content, "Cursos disponibles", y);
@@ -320,12 +336,14 @@ public class Main {
                 y = writeSubtitle(content, "Progreso por usuario", y);
                 for (UserProgress progress : userProgressRepository.findAll()) {
                     String status = Boolean.TRUE.equals(progress.getCompleted()) ? "Completado" : "En progreso";
+                    Color statusColor = Boolean.TRUE.equals(progress.getCompleted()) ? SPARKFI_GREEN : SPARKFI_ORANGE;
                     y = writeLine(
                             content,
                             "- " + progress.getUser().getUsername()
                                     + " | " + progress.getCourse().getTitle()
                                     + " | " + progress.getProgressPercentage()
                                     + "% | " + status,
+                            statusColor,
                             y
                     );
                 }
@@ -338,22 +356,61 @@ public class Main {
         }
     }
 
+    private static void drawHeader(PDPageContentStream content) throws IOException {
+        content.setNonStrokingColor(SPARKFI_GREEN);
+        content.addRect(0, 705, 612, 90);
+        content.fill();
+
+        writeText(content, "Reporte SparkFi", PDType1Font.HELVETICA_BOLD, 24, 60, 755, 0, WHITE);
+        writeText(content, "Resumen de usuarios, cursos y progreso financiero", PDType1Font.HELVETICA, 12, 60, 733, 0, WHITE);
+    }
+
+    private static float writeSummaryRow(
+            PDPageContentStream content,
+            String firstLabel,
+            int firstValue,
+            String secondLabel,
+            int secondValue,
+            String thirdLabel,
+            int thirdValue,
+            float y
+    ) throws IOException {
+        drawSummaryCard(content, 60, y - 42, firstLabel, firstValue);
+        drawSummaryCard(content, 230, y - 42, secondLabel, secondValue);
+        drawSummaryCard(content, 400, y - 42, thirdLabel, thirdValue);
+        return y - 62;
+    }
+
+    private static void drawSummaryCard(PDPageContentStream content, float x, float y, String label, int value) throws IOException {
+        content.setNonStrokingColor(SPARKFI_LIGHT_GREEN);
+        content.addRect(x, y, 145, 42);
+        content.fill();
+
+        writeText(content, label, PDType1Font.HELVETICA, 10, x + 12, y + 25, 0, SPARKFI_GRAY);
+        writeText(content, String.valueOf(value), PDType1Font.HELVETICA_BOLD, 15, x + 12, y + 9, 0, SPARKFI_GREEN);
+    }
+
     private static float writeTitle(PDPageContentStream content, String text, float y) throws IOException {
-        return writeText(content, text, PDType1Font.HELVETICA_BOLD, 18, y, 28);
+        return writeText(content, text, PDType1Font.HELVETICA_BOLD, 18, 60, y, 28, SPARKFI_DARK);
     }
 
     private static float writeSubtitle(PDPageContentStream content, String text, float y) throws IOException {
-        return writeText(content, text, PDType1Font.HELVETICA_BOLD, 13, y, 22);
+        return writeText(content, text, PDType1Font.HELVETICA_BOLD, 13, 60, y, 22, SPARKFI_GREEN);
     }
 
     private static float writeLine(PDPageContentStream content, String text, float y) throws IOException {
-        return writeText(content, text, PDType1Font.HELVETICA, 11, y, 17);
+        return writeLine(content, text, SPARKFI_DARK, y);
     }
 
-    private static float writeText(PDPageContentStream content, String text, PDType1Font font, int fontSize, float y, float spacing) throws IOException {
+    private static float writeLine(PDPageContentStream content, String text, Color color, float y) throws IOException {
+        return writeText(content, text, PDType1Font.HELVETICA, 11, 60, y, 17, color);
+    }
+
+    private static float writeText(PDPageContentStream content, String text, PDType1Font font, int fontSize, float x, float y, float spacing, Color color) throws IOException {
         content.beginText();
+        content.setNonStrokingColor(color);
         content.setFont(font, fontSize);
-        content.newLineAtOffset(60, y);
+        content.newLineAtOffset(x, y);
         content.showText(text);
         content.endText();
         return y - spacing;
