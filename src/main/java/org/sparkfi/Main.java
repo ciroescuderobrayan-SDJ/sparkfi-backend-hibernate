@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -99,18 +100,31 @@ public class Main {
         long timestamp = System.currentTimeMillis();
         LocalDateTime now = LocalDateTime.now();
 
-        User user = new User(
-                "student_" + timestamp,
-                "student_" + timestamp + "@sparkfi.com",
+        User jhonFredy = new User(
+                "Jhon Fredy",
+                "jhon.fredy." + timestamp + "@sparkfi.com",
                 "hashed_password_example"
         );
 
-        Course course = new Course(
-                "Finanzas personales basicas",
-                "Curso introductorio para aprender a manejar el dinero.",
-                45,
-                "Principiante"
+        User santiagoYosa = new User(
+                "Santiago Yosa",
+                "santiago.yosa." + timestamp + "@sparkfi.com",
+                "hashed_password_example"
         );
+
+        User gustavoMontoya = new User(
+                "Gustavo Montoya",
+                "gustavo.montoya." + timestamp + "@sparkfi.com",
+                "hashed_password_example"
+        );
+
+        List<Course> courses = createSampleCourses();
+        Course jhonCompletedCourse = courses.get(0);
+        Course jhonInProgressCourse = courses.get(1);
+        Course santiagoCompletedCourse = courses.get(2);
+        Course santiagoInProgressCourse = courses.get(3);
+        Course gustavoCompletedCourse = courses.get(4);
+        Course gustavoInProgressCourse = courses.get(5);
 
         Challenge challenge = new Challenge(
                 "Reto de ahorro semanal",
@@ -120,40 +134,42 @@ public class Main {
                 "Principiante"
         );
 
-        userRepository.save(user);
-        courseRepository.save(course);
+        userRepository.save(jhonFredy);
+        userRepository.save(santiagoYosa);
+        userRepository.save(gustavoMontoya);
+        courses.forEach(courseRepository::save);
         challengeRepository.save(challenge);
 
         loginSessionRepository.save(new LoginSession(
-                user,
+                jhonFredy,
                 "session_token_" + timestamp,
                 now,
                 true
         ));
 
         communityPostRepository.save(new CommunityPost(
-                user,
+                santiagoYosa,
                 "Mi primer avance en SparkFi",
                 "Hoy empece a organizar mis gastos y crear mi primer reto de ahorro.",
                 now
         ));
 
         userAchievementRepository.save(new UserAchievement(
-                user,
+                gustavoMontoya,
                 "Primer paso financiero",
                 "Logro obtenido por crear el primer avance dentro de SparkFi.",
                 now
         ));
 
-        userProgressRepository.save(new UserProgress(
-                user,
-                course,
-                35,
-                false
-        ));
+        userProgressRepository.save(new UserProgress(jhonFredy, jhonCompletedCourse, 100, true));
+        userProgressRepository.save(new UserProgress(jhonFredy, jhonInProgressCourse, 45, false));
+        userProgressRepository.save(new UserProgress(santiagoYosa, santiagoCompletedCourse, 100, true));
+        userProgressRepository.save(new UserProgress(santiagoYosa, santiagoInProgressCourse, 60, false));
+        userProgressRepository.save(new UserProgress(gustavoMontoya, gustavoCompletedCourse, 100, true));
+        userProgressRepository.save(new UserProgress(gustavoMontoya, gustavoInProgressCourse, 25, false));
 
         userSettingsRepository.save(new UserSettings(
-                user,
+                jhonFredy,
                 "COP",
                 true,
                 true,
@@ -174,6 +190,73 @@ public class Main {
         }
 
         users.forEach(user -> System.out.println(user.getId() + " - " + user.getUsername() + " - " + user.getEmail()));
+    }
+
+    private static List<Course> createSampleCourses() {
+        List<Course> courses = new ArrayList<>();
+
+        courses.add(new Course(
+                "Presupuesto Facil",
+                "Aprende a crear un presupuesto sencillo para organizar tu dinero.",
+                35,
+                "Principiante"
+        ));
+        courses.add(new Course(
+                "Domina tus Gastos",
+                "Identifica en que se va tu dinero y toma mejores decisiones.",
+                40,
+                "Principiante"
+        ));
+        courses.add(new Course(
+                "Evita Gastar de Mas",
+                "Reconoce gastos innecesarios y crea habitos de compra mas conscientes.",
+                30,
+                "Principiante"
+        ));
+        courses.add(new Course(
+                "Gastos Hormiga: Aprende a Detectarlos",
+                "Descubre pequenos gastos diarios que afectan tu presupuesto.",
+                25,
+                "Principiante"
+        ));
+        courses.add(new Course(
+                "Organiza tu Mes Financiero",
+                "Planea ingresos, gastos y metas para cada mes.",
+                45,
+                "Intermedio"
+        ));
+        courses.add(new Course(
+                "Como Hacer un Presupuesto Personal",
+                "Construye un presupuesto personal paso a paso.",
+                50,
+                "Principiante"
+        ));
+        courses.add(new Course(
+                "Control Financiero Basico",
+                "Aprende las bases para controlar tus finanzas personales.",
+                40,
+                "Principiante"
+        ));
+        courses.add(new Course(
+                "Tu Dinero bajo Control",
+                "Organiza tus gastos y define prioridades para usar mejor tu dinero.",
+                38,
+                "Intermedio"
+        ));
+        courses.add(new Course(
+                "Aprende a Priorizar tus Gastos",
+                "Diferencia necesidades, gustos y gastos que pueden esperar.",
+                32,
+                "Principiante"
+        ));
+        courses.add(new Course(
+                "Menos Impulso, Mas Control",
+                "Mejora tus decisiones de compra y reduce gastos impulsivos.",
+                30,
+                "Principiante"
+        ));
+
+        return courses;
     }
 
     private static void listCourses() {
@@ -231,6 +314,20 @@ public class Main {
                 y = writeSubtitle(content, "Retos disponibles", y);
                 for (Challenge challenge : challengeRepository.findAll()) {
                     y = writeLine(content, "- " + challenge.getTitle() + " - Meta: " + challenge.getTargetAmount(), y);
+                }
+
+                y -= 10;
+                y = writeSubtitle(content, "Progreso por usuario", y);
+                for (UserProgress progress : userProgressRepository.findAll()) {
+                    String status = Boolean.TRUE.equals(progress.getCompleted()) ? "Completado" : "En progreso";
+                    y = writeLine(
+                            content,
+                            "- " + progress.getUser().getUsername()
+                                    + " | " + progress.getCourse().getTitle()
+                                    + " | " + progress.getProgressPercentage()
+                                    + "% | " + status,
+                            y
+                    );
                 }
             }
 
