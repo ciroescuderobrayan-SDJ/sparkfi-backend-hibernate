@@ -11,6 +11,8 @@ La idea de este proyecto es ir construyendo la capa de persistencia de una app e
 - Hibernate ORM 6.6.2
 - Jakarta Persistence API
 - PostgreSQL
+- Apache PDFBox
+- dotenv-java
 
 ## Estructura general
 
@@ -59,13 +61,15 @@ El proyecto actualmente tiene estas entidades:
 
 ## Configuracion de base de datos
 
-Las credenciales no estan escritas directamente en el codigo. `JpaUtil` las toma desde variables de entorno:
+Las credenciales no estan escritas directamente en el codigo. `JpaUtil` las toma desde variables de entorno o desde un archivo `.env` local:
 
 ```text
 SPARKFI_DB_URL
 SPARKFI_DB_USER
 SPARKFI_DB_PASSWORD
 ```
+
+Puedes copiar `.env.example` como `.env` y reemplazar los valores de ejemplo por tus credenciales reales de Prisma Postgres. El archivo `.env` no se sube a GitHub.
 
 Ejemplo en PowerShell:
 
@@ -94,10 +98,19 @@ mvn clean compile
 
 Si todo esta bien configurado, Maven deberia descargar las dependencias y compilar el proyecto sin errores.
 
+Para ejecutar el panel interactivo por consola:
+
+```bash
+mvn exec:java -Dexec.mainClass="org.sparkfi.Main"
+```
+
+El panel permite crear datos de prueba, listar informacion, generar un reporte PDF y limpiar los datos de las tablas de SparkFi.
+
 ## Notas del proyecto
 
 - `target/` no se sube al repositorio porque es generado por Maven.
 - `.env` esta ignorado para evitar subir credenciales.
+- `sparkfi-report.pdf` esta ignorado porque es un archivo generado por la aplicacion.
 - La configuracion de VS Code tambien esta ignorada.
 - Hibernate esta configurado con `hibernate.hbm2ddl.auto=update`, asi que puede actualizar las tablas segun las entidades durante el desarrollo.
 

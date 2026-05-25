@@ -27,5 +27,19 @@
             <artifactId>postgresql</artifactId>
             <version>42.7.10</version>
         </dependency>
+
+        <!-- Apache PDFBox: permite generar reportes PDF desde Java -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.31</version>
+        </dependency>
+
+        <!-- dotenv-java: permite leer variables desde un archivo .env local -->
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>dotenv-java</artifactId>
+            <version>3.2.0</version>
+        </dependency>
     </dependencies>
 </project>
